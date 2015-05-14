@@ -1,6 +1,3 @@
-#### Introduction
-
-GLCalendarView is fully customizable calendar view acting as a date range picker
 ## Demo
 
 ![GLCalendarView](https://raw.githubusercontent.com/Glow-Inc/GLCalendarView/master/demo.gif)
