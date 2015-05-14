@@ -1,3 +1,4 @@
+
 ## Demo
 
 ![GLCalendarView](https://raw.githubusercontent.com/Glow-Inc/GLCalendarView/master/demo.gif)
@@ -29,6 +30,8 @@ range.binding = yourModelObject // you can bind your model to the range
 self.calendarView.ranges = [@[range1] mutableCopy];
 [self.calendarView reload];
 ```
+
+for the binding field, it helps in that you can bind the actual model to the range, thus you can easily retrieve the corresponding model from the range later. For example, if you are building a trip app, you probably has a Trip class, you can bind the Trip instance to the range, and if the range gets updated in the calendar view, you can easily get the Trip instance from it and do some further updates.
 
 Then the calendar view will handle all the user interactions including adding, updating, or deleting a range, you just need to implement the delegate protocol to listen for those events:
 ```objective-c
