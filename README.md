@@ -1,3 +1,4 @@
+![GLCalendarView](https://cocoapod-badges.herokuapp.com/v/GLCalendarView/badge.png)
 
 ## Demo
 
