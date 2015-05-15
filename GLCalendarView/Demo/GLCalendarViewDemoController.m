@@ -35,8 +35,8 @@
     
     NSDate *today = [NSDate date];
     
-    NSDate *beginDate1 = [GLDateUtils dateByAddingDays:-31 toDate:today];
-    NSDate *endDate1 = [GLDateUtils dateByAddingDays:-27 toDate:today];
+    NSDate *beginDate1 = [GLDateUtils dateByAddingDays:-32 toDate:today];
+    NSDate *endDate1 = [GLDateUtils dateByAddingDays:-26 toDate:today];
     GLCalendarDateRange *range1 = [GLCalendarDateRange rangeWithBeginDate:beginDate1 endDate:endDate1];
     range1.backgroundColor = UIColorFromRGB(0x79a9cd);
     range1.editable = YES;
