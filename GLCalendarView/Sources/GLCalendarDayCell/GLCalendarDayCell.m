@@ -115,7 +115,11 @@
     // day label and month label
     if ([self isToday]) {
         self.monthLabel.textColor = [UIColor whiteColor];
-        [self setMonthLabelText:@"Today"];
+        NSDateFormatter *todayFormatter = [[NSDateFormatter alloc] init];
+        todayFormatter.dateStyle = NSDateFormatterMediumStyle;
+        todayFormatter.timeStyle = NSDateFormatterNoStyle;
+        todayFormatter.doesRelativeDateFormatting = YES;
+        [self setMonthLabelText:[todayFormatter stringFromDate:[NSDate date]]];
         self.dayLabel.textColor = [UIColor whiteColor];
         [self setTodayLabelText:[NSString stringWithFormat:@"%ld", (long)day]];
         self.backgroundCover.isToday = YES;
@@ -217,7 +221,7 @@
 static NSArray *months;
 - (NSString *)monthText:(NSInteger)month {
     if (!months) {
-        months = @[@"JAN", @"FEB", @"MAR", @"APR", @"MAY", @"JUN", @"JUL", @"AUG", @"SEP", @"OCT", @"NOV", @"DEC"];
+        months = [[[[NSDateFormatter alloc] init] shortStandaloneMonthSymbols] valueForKeyPath:@"capitalizedString"];
     }
     return [months objectAtIndex:(month - 1)];
 }

@@ -43,10 +43,10 @@
     NSCalendar *calendar = [GLDateUtils calendar];
     NSDateComponents *components = [calendar components:NSCalendarUnitWeekday fromDate:date];
     NSInteger weekday = components.weekday;//1 for Sunday
-    if (weekday == 1) {
+    if (weekday == calendar.firstWeekday) {
         return date;
     } else {
-        return [GLDateUtils dateByAddingDays:(1 - weekday) toDate:date];
+        return [GLDateUtils dateByAddingDays:(calendar.firstWeekday - weekday) toDate:date];
     }
 }
 
@@ -55,7 +55,7 @@
     NSCalendar *calendar = [GLDateUtils calendar];
     NSDateComponents *components = [calendar components:NSCalendarUnitWeekday fromDate:date];
     NSInteger weekday = components.weekday;//1 for Sunday
-    if (weekday == 7) {//7 for Saturday
+    if (weekday == (calendar.firstWeekday + 5 % 7) + 1) {  // firstWeekday + 6 (= 7 Saturday for US)
         return date;
     } else {
         return [GLDateUtils dateByAddingDays:(7 - weekday) toDate:date];
@@ -133,7 +133,7 @@
 static NSArray *months;
 + (NSString *)monthText:(NSInteger)month {
     if (!months) {
-        months = @[@"Jan", @"Feb", @"Mar", @"Apr", @"May", @"Jun", @"Jul", @"Aug", @"Sep", @"Oct", @"Nov", @"Dec"];
+        months = [[[NSDateFormatter alloc] init] shortStandaloneMonthSymbols];
     }
     return [months objectAtIndex:(month - 1)];
 }
