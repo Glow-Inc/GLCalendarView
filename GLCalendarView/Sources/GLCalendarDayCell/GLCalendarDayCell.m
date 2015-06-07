@@ -109,9 +109,7 @@
         self.backgroundCover.paddingLeft = 0;
         self.backgroundCover.paddingRight = 0;
     }
-    
-    [self layoutIfNeeded];
-    
+        
     // day label and month label
     if ([self isToday]) {
         self.monthLabel.textColor = [UIColor whiteColor];
