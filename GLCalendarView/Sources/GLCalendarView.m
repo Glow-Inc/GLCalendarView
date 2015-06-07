@@ -128,7 +128,6 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
     self.weekDayTitleAttributes = appearance.weekDayTitleAttributes ? appearance.weekDayTitleAttributes : @{NSFontAttributeName:[UIFont systemFontOfSize:8], NSForegroundColorAttributeName:[UIColor grayColor]};
     self.monthCoverAttributes = appearance.monthCoverAttributes ? appearance.monthCoverAttributes : @{NSFontAttributeName:[UIFont systemFontOfSize:30]};
     self.monthCoverView.textAttributes = self.monthCoverAttributes;
-    
 }
 
 #pragma mark - public api
@@ -319,9 +318,11 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 {
     self.monthCoverView.contentSize = self.collectionView.contentSize;
     self.monthCoverView.hidden = NO;
-    [UIView animateWithDuration:0.3 animations:^{
+    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
         self.monthCoverView.alpha = 1;
         self.collectionView.alpha = 0.3;
+    } completion:^(BOOL finished) {
+        
     }];
 }
 
@@ -335,7 +336,7 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
                      withVelocity:(CGPoint)velocity
               targetContentOffset:(inout CGPoint *)targetContentOffset
 {
-    [UIView animateWithDuration:0.3 animations:^{
+    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
         self.monthCoverView.alpha = 0;
         self.collectionView.alpha = 1;
     } completion:^(BOOL finished) {
@@ -561,9 +562,14 @@ static NSDate *today;
     for (NSInteger i = beginIndex; i <= endIndex; i++) {
         [indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
     }
-    [UIView performWithoutAnimation:^{
-        [self.collectionView reloadItemsAtIndexPaths:indexPaths];
-    }];
+    // prevent crash: too many update animations on one view - limit is 31 in flight at a time
+    if (indexPaths.count > 30) {
+        [self.collectionView reloadData];
+    } else {
+        [UIView performWithoutAnimation:^{
+            [self.collectionView reloadItemsAtIndexPaths:indexPaths];
+        }];
+    }
 }
 
 - (NSIndexPath *)indexPathForDate:(NSDate *)date
