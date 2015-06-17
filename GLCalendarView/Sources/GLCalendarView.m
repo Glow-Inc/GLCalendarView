@@ -123,10 +123,10 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 - (void)reloadAppearance
 {
     GLCalendarView *appearance = [[self class] appearance];
-    self.padding = appearance.padding ? appearance.padding : DEFAULT_PADDING;
-    self.rowHeight = appearance.rowHeight ? appearance.rowHeight : DEFAULT_ROW_HEIGHT;
-    self.weekDayTitleAttributes = appearance.weekDayTitleAttributes ? appearance.weekDayTitleAttributes : @{NSFontAttributeName:[UIFont systemFontOfSize:8], NSForegroundColorAttributeName:[UIColor grayColor]};
-    self.monthCoverAttributes = appearance.monthCoverAttributes ? appearance.monthCoverAttributes : @{NSFontAttributeName:[UIFont systemFontOfSize:30]};
+    self.padding = appearance.padding ?: DEFAULT_PADDING;
+    self.rowHeight = appearance.rowHeight ?: DEFAULT_ROW_HEIGHT;
+    self.weekDayTitleAttributes = appearance.weekDayTitleAttributes ?: @{NSFontAttributeName:[UIFont systemFontOfSize:8], NSForegroundColorAttributeName:[UIColor grayColor]};
+    self.monthCoverAttributes = appearance.monthCoverAttributes ?: @{NSFontAttributeName:[UIFont systemFontOfSize:30]};
     self.monthCoverView.textAttributes = self.monthCoverAttributes;
 }
 
