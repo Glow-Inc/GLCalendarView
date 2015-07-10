@@ -9,10 +9,21 @@
 #import "GLCalendarMonthCoverView.h"
 #import "GLDateUtils.h"
 
+@interface GLCalendarMonthCoverView()
+@property (nonatomic, copy) NSDate *firstDate;
+@property (nonatomic, copy) NSDate *lastDate;
+@end
+
 @implementation GLCalendarMonthCoverView
 
 - (void)updateWithFirstDate:(NSDate *)firstDate lastDate:(NSDate *)lastDate calendar:(NSCalendar *)calendar rowHeight:(CGFloat)rowHeight
 {
+    if ([GLDateUtils date:firstDate isSameDayAsDate:self.firstDate] && [GLDateUtils date:lastDate isSameDayAsDate:self.lastDate]) {
+        return;
+    }
+    self.firstDate = firstDate;
+    self.lastDate = lastDate;
+    
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
     NSDateFormatter *monthFormatter = [[NSDateFormatter alloc] init];
