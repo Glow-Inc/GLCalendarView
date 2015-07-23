@@ -17,7 +17,7 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 #define DEFAULT_ROW_HEIGHT 54;
 
 @interface GLCalendarView()<UICollectionViewDataSource, UICollectionViewDelegate, UIScrollViewDelegate, UIGestureRecognizerDelegate>
-@property (nonatomic, strong) NSCalendar *calendar;
+@property (nonatomic, readwrite) NSCalendar *calendar;
 @property (nonatomic, weak) GLCalendarDateRange *rangeUnderEdit;
 
 @property (nonatomic, strong) UILongPressGestureRecognizer *dragBeginDateGesture;
@@ -108,7 +108,13 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
     [self.weekDayTitle.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     CGFloat width = (CGRectGetWidth(self.bounds) - self.padding * 2) / 7;
     CGFloat centerY = self.weekDayTitle.bounds.size.height / 2;
-    NSArray *titles = @[@"S", @"M", @"T", @"W", @"T", @"F", @"S"];
+    NSArray *titles = [[[NSDateFormatter alloc] init] veryShortStandaloneWeekdaySymbols];
+    NSInteger firstWeekDayIdx = [self.calendar firstWeekday] - 1;  // Sunday == 1
+    if (firstWeekDayIdx > 0) {
+        NSArray *post = [titles subarrayWithRange:NSMakeRange(firstWeekDayIdx, 7 - firstWeekDayIdx)];
+        NSArray *pre = [titles subarrayWithRange:NSMakeRange(0, firstWeekDayIdx)];
+        titles = [post arrayByAddingObjectsFromArray:pre];
+    }
     for (int i = 0; i < titles.count; i++) {
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width, 20)];
         label.textAlignment = NSTextAlignmentCenter;
