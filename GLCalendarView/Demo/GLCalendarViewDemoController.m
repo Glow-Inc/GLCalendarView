@@ -91,6 +91,11 @@
     NSLog(@"did update range: %@", range);
 }
 
+- (NSArray*) calendarViewWeekDayTitles
+{
+    return self.calendarView.calendar.shortWeekdaySymbols;
+}
+
 - (IBAction)deleteButtonPressed:(id)sender
 {
     if (self.rangeUnderEdit) {
