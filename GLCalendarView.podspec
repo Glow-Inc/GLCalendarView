@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.homepage     = "https://github.com/Glow-Inc/GLCalendarView"
   s.license      = "MIT"
   s.author       = { "leo" => "leo@glowing.com" }
-  s.source       = { :git => "https://github.com/Glow-Inc/GLCalendarView.git", :tag => 'v1.1.0'}
+  s.source       = { :git => "https://github.com/Glow-Inc/GLCalendarView.git", :tag => 'v1.2.0'}
   s.source_files = "GLCalendarView/Sources/**/*.{h,m}"
   s.resources = [
     "GLCalendarView/Sources/**/*.{png}",
