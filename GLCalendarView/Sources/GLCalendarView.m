@@ -108,7 +108,10 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
     [self.weekDayTitle.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     CGFloat width = (CGRectGetWidth(self.bounds) - self.padding * 2) / 7;
     CGFloat centerY = self.weekDayTitle.bounds.size.height / 2;
-    NSArray *titles = [[[NSDateFormatter alloc] init] veryShortStandaloneWeekdaySymbols];
+    NSArray *titles = self.calendar.veryShortStandaloneWeekdaySymbols;
+    if ([self.delegate respondsToSelector:@selector(calendarViewWeekDayTitles)]) {
+        titles = self.delegate.calendarViewWeekDayTitles;
+    }
     NSInteger firstWeekDayIdx = [self.calendar firstWeekday] - 1;  // Sunday == 1
     if (firstWeekDayIdx > 0) {
         NSArray *post = [titles subarrayWithRange:NSMakeRange(firstWeekDayIdx, 7 - firstWeekDayIdx)];
