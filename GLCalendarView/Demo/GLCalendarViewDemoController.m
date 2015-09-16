@@ -26,7 +26,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     self.calendarView.delegate = self;
-    self.calendarView.showMaginfier = YES;
+    self.calendarView.showMagnifier = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated

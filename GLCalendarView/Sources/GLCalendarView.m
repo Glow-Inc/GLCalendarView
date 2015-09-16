@@ -491,7 +491,7 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 
 - (void)showMagnifierAboveDate:(NSDate *)date
 {
-    if (!self.showMaginfier) {
+    if (!self.showMagnifier) {
         return;
     }
     GLCalendarDayCell *cell = (GLCalendarDayCell *)[self collectionView:self.collectionView cellForItemAtIndexPath:[self indexPathForDate:date]];
@@ -517,7 +517,7 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 
 - (void)hideMagnifier
 {
-    if (!self.showMaginfier) {
+    if (!self.showMagnifier) {
         return;
     }
     self.magnifierContainer.hidden = YES;
