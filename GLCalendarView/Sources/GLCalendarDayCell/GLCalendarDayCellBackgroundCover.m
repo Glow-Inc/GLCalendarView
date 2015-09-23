@@ -158,11 +158,6 @@
         circleDiameter = heightWithPadding;
     }
     
-    NSLog(@"left %f",self.paddingLeft);
-    NSLog(@"right %f",self.paddingRight);
-    NSLog(@"top %f",self.paddingTop);
-    NSLog(@"borderWidth %f",self.borderWidth);
-    
     UIBezierPath *path = [UIBezierPath bezierPath];
     if (!self.inEdit && !self.continuousRangeDisplay) {
         CGRect rect = CGRectMake((width + paddingLeft - paddingRight) / 2 - circleDiameter / 2, (height - circleDiameter) / 2, circleDiameter, circleDiameter);
