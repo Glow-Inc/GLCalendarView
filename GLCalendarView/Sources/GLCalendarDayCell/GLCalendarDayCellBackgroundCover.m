@@ -81,21 +81,18 @@
             CGFloat heightWithPadding = height - borderWidth * 2 - paddingTop * 2;
             CGFloat widthWithPadding = width - borderWidth * 2 - paddingLeft - paddingRight;
             
+            CGFloat circleDiameter;
+            
             if (heightWithPadding > widthWithPadding) {
-                self.circleDiameter = widthWithPadding;
+                circleDiameter = widthWithPadding;
             } else {
-                self.circleDiameter = heightWithPadding;
+                circleDiameter = heightWithPadding;
             }
             
-            self.beginPoint.center = CGPointMake(width / 2 - self.circleDiameter / 2, height / 2);
+            self.beginPoint.center = CGPointMake((width + paddingLeft - paddingRight) / 2 - circleDiameter / 2, height / 2);
             [self addSubview:self.beginPoint];
-            self.endPoint.center = CGPointMake(width / 2 + self.circleDiameter / 2, height / 2);
+            self.endPoint.center = CGPointMake((width + paddingLeft - paddingRight) / 2 + circleDiameter / 2, height / 2);
             [self addSubview:self.endPoint];
-            
-//            self.beginPoint.center = CGPointMake(self.borderWidth / 2 + self.paddingLeft, self.bounds.size.height / 2);
-//            [self addSubview:self.beginPoint];
-//            self.endPoint.center = CGPointMake(self.bounds.size.width - self.borderWidth / 2 - self.paddingRight, self.bounds.size.height / 2);
-//            [self addSubview:self.endPoint];
         } else {
             [_beginPoint removeFromSuperview];
             [_endPoint removeFromSuperview];
@@ -153,10 +150,12 @@
     CGFloat heightWithPadding = height - borderWidth * 2 - paddingTop * 2;
     CGFloat widthWithPadding = width - borderWidth * 2 - paddingLeft - paddingRight;
     
+    CGFloat circleDiameter;
+    
     if (heightWithPadding > widthWithPadding) {
-        self.circleDiameter = widthWithPadding;
+        circleDiameter = widthWithPadding;
     } else {
-        self.circleDiameter = heightWithPadding;
+        circleDiameter = heightWithPadding;
     }
     
     NSLog(@"left %f",self.paddingLeft);
@@ -166,8 +165,7 @@
     
     UIBezierPath *path = [UIBezierPath bezierPath];
     if (!self.inEdit && !self.continuousRangeDisplay) {
-//        CGRect rect = CGRectMake(borderWidth + paddingLeft, borderWidth + paddingTop, width - borderWidth * 2 - paddingLeft - paddingRight,  height - borderWidth * 2 - paddingTop * 2);
-        CGRect rect = CGRectMake((width + paddingLeft - paddingRight) / 2 - self.circleDiameter / 2, (height - self.circleDiameter) / 2, self.circleDiameter, self.circleDiameter);
+        CGRect rect = CGRectMake((width + paddingLeft - paddingRight) / 2 - circleDiameter / 2, (height - circleDiameter) / 2, circleDiameter, circleDiameter);
         if (self.backgroundImage) {
             [self.backgroundImage drawInRect:rect];
             return;
@@ -203,13 +201,12 @@
         CGFloat widthWithPadding = width - borderWidth * 2 - paddingLeft - paddingRight;
         
         if (heightWithPadding > widthWithPadding) {
-            self.circleDiameter = widthWithPadding;
+            circleDiameter = widthWithPadding;
         } else {
-            self.circleDiameter = heightWithPadding;
+            circleDiameter = heightWithPadding;
         }
-        path = [UIBezierPath bezierPathWithOvalInRect: CGRectMake((width + paddingLeft - paddingRight) / 2 - self.circleDiameter / 2, (height - self.circleDiameter) / 2, self.circleDiameter, self.circleDiameter)];
+        path = [UIBezierPath bezierPathWithOvalInRect: CGRectMake((width + paddingLeft - paddingRight) / 2 - circleDiameter / 2, (height - circleDiameter) / 2, circleDiameter, circleDiameter)];
         
-//        path = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(borderWidth + paddingLeft, borderWidth + paddingTop, width - borderWidth * 2 - paddingLeft - paddingRight,  height - borderWidth * 2 - paddingTop * 2)];
         [path closePath];
     }
     if (_inEdit) {
@@ -239,24 +236,15 @@
     CGFloat heightWithPadding = height - borderWidth * 2 - paddingTop * 2;
     CGFloat widthWithPadding = width - borderWidth * 2 - paddingLeft - paddingRight;
     
+    CGFloat circleDiameter;
+    
     if (heightWithPadding > widthWithPadding) {
-        self.circleDiameter = widthWithPadding;
+        circleDiameter = widthWithPadding;
     } else {
-        self.circleDiameter = heightWithPadding;
+        circleDiameter = heightWithPadding;
     }
     
-    UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect: CGRectMake((width + paddingLeft - paddingRight) / 2 - self.circleDiameter / 2, (height - self.circleDiameter) / 2, self.circleDiameter, self.circleDiameter)];
-    
-//    CGFloat paddingLeft = self.paddingLeft;
-//    CGFloat paddingRight = self.paddingRight;
-//    CGFloat paddingTop = self.paddingTop;
-//    
-//    CGFloat borderWidth = self.borderWidth;
-//    
-//    CGFloat height = rect.size.height;
-//    CGFloat width = rect.size.width;
-//            
-//    UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(borderWidth + paddingLeft, borderWidth + paddingTop, width - borderWidth * 2 - paddingLeft - paddingRight,  height - borderWidth * 2 - paddingTop * 2)];
+    UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect: CGRectMake((width + paddingLeft - paddingRight) / 2 - circleDiameter / 2, (height - circleDiameter) / 2, circleDiameter, circleDiameter)];
     
     [path closePath];
     [self.fillColor setFill];
@@ -288,4 +276,5 @@
     pointView.center = center;
     pointView.layer.cornerRadius = size / 2;
 }
+
 @end
