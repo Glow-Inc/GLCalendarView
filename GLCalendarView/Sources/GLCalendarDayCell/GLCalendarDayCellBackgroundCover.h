@@ -25,6 +25,7 @@ typedef NS_ENUM(NSInteger, RANGE_POSITION) {
 @property (nonatomic, strong) UIColor *strokeColor;
 @property (nonatomic, strong) UIImage *backgroundImage;
 @property (nonatomic) CGFloat borderWidth;
+@property (nonatomic) CGFloat circleDiameter;
 @property (nonatomic) BOOL inEdit;
 @property (nonatomic) BOOL isToday;
 @property (nonatomic) BOOL continuousRangeDisplay;
