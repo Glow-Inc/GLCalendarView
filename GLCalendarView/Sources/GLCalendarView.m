@@ -273,6 +273,19 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 {
     NSDate *date = [self dateForCellAtIndexPath:indexPath];
     GLCalendarDateRange *range = [self selectedRangeForDate:date];
+    if (!range) {
+        BOOL canAdd = [self.delegate calenderView:self canAddRangeWithBeginDate:date];
+        if (canAdd) {
+            GLCalendarDateRange *rangeToAdd = [self.delegate calenderView:self rangeToAddWithBeginDate:date];
+            [self addRange:rangeToAdd];
+        }
+    }
+}
+/*
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSDate *date = [self dateForCellAtIndexPath:indexPath];
+    GLCalendarDateRange *range = [self selectedRangeForDate:date];
     
     // if click in a range
     if (range && range.editable) {
@@ -296,7 +309,7 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
         }
     }
 }
-
+*/
 # pragma mark - UICollectionView layout
 
 - (UIEdgeInsets)collectionView:(UICollectionView*)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
