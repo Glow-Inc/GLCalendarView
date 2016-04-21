@@ -41,11 +41,11 @@
 - (void)reloadAppearance
 {
     GLCalendarDayCell *appearance = [[self class] appearance];
-    self.evenMonthBackgroundColor = appearance.evenMonthBackgroundColor ?: UIColorFromRGB(0xf8f8f8);
+    self.evenMonthBackgroundColor = appearance.evenMonthBackgroundColor ?: [UIColor whiteColor];
     self.oddMonthBackgroundColor = appearance.oddMonthBackgroundColor ?: [UIColor whiteColor];
-    self.dayLabelAttributes = appearance.dayLabelAttributes ?: @{NSFontAttributeName:[UIFont systemFontOfSize:20]};
+    self.dayLabelAttributes = appearance.dayLabelAttributes ?: @{NSFontAttributeName:[UIFont systemFontOfSize:14]};
     self.futureDayLabelAttributes = appearance.futureDayLabelAttributes ?: self.dayLabelAttributes;
-    self.monthLabelAttributes = appearance.monthLabelAttributes ?: @{NSFontAttributeName:[UIFont systemFontOfSize:8]};
+    self.monthLabelAttributes = appearance.monthLabelAttributes ?: @{NSFontAttributeName:[UIFont systemFontOfSize:14]};
     self.todayLabelAttributes = appearance.todayLabelAttributes ?: @{NSFontAttributeName:[UIFont boldSystemFontOfSize:22]};
     
     self.backgroundCover.paddingTop = appearance.editCoverPadding ?: 2;
@@ -57,8 +57,9 @@
     
     RANGE_DISPLAY_MODE mode = appearance.rangeDisplayMode ?: RANGE_DISPLAY_MODE_SINGLE;
     self.backgroundCover.continuousRangeDisplay = mode == RANGE_DISPLAY_MODE_CONTINUOUS ? YES : NO;
-    
+
     self.todayBackgroundColor = appearance.todayBackgroundColor ?: self.backgroundCover.strokeColor;
+    self.orangeColor = appearance.orangeColor ?: UIColorFromRGB(0xFF671B);
     self.containerPadding = [GLCalendarView appearance].padding;
 }
 
@@ -93,6 +94,7 @@
     }
     
     // adjust background position
+    self.backgroundCover.position = self.position;
     if (self.position == POSITION_LEFT_EDGE) {
         self.backgroundCoverRight.constant = 0;
         self.backgroundCoverLeft.constant = -self.containerPadding;
@@ -112,16 +114,17 @@
         
     // day label and month label
     if ([self isToday]) {
-        self.monthLabel.textColor = [UIColor whiteColor];
+//        self.monthLabel.textColor = [UIColor whiteColor];
         NSDateFormatter *todayFormatter = [[NSDateFormatter alloc] init];
         todayFormatter.dateStyle = NSDateFormatterMediumStyle;
         todayFormatter.timeStyle = NSDateFormatterNoStyle;
         todayFormatter.doesRelativeDateFormatting = YES;
         [self setMonthLabelText:[todayFormatter stringFromDate:[NSDate date]]];
         self.dayLabel.textColor = [UIColor whiteColor];
-        [self setTodayLabelText:[NSString stringWithFormat:@"%ld", (long)day]];
+        [self setDayLabelText:[NSString stringWithFormat:@"%ld", (long)day]];
         self.backgroundCover.isToday = YES;
         self.backgroundCover.fillColor = self.todayBackgroundColor;
+        self.backgroundCover.orangeColor = self.orangeColor;
     } else if (day == 1) {
         self.monthLabel.textColor = [UIColor redColor];
         [self setMonthLabelText:[self monthText:month]];
@@ -146,9 +149,9 @@
         self.backgroundCover.fillColor = self.range.backgroundColor ?: [UIColor clearColor];
         self.backgroundCover.backgroundImage = self.range.backgroundImage ?: nil;
         UIColor *textColor = self.range.textColor ?: [UIColor whiteColor];
-        self.monthLabel.textColor = textColor;
-        self.dayLabel.textColor = textColor;
-        
+//        self.monthLabel.textColor = textColor;
+//        self.dayLabel.textColor = textColor;
+
         // check position in range
         BOOL isBeginDate = [GLDateUtils date:self.date isSameDayAsDate:self.range.beginDate];
         BOOL isEndDate = [GLDateUtils date:self.date isSameDayAsDate:self.range.endDate];
@@ -157,9 +160,11 @@
             self.backgroundCover.rangePosition = RANGE_POSITION_SINGLE;
             [self.superview bringSubviewToFront:self];
         } else if (isBeginDate) {
+            self.dayLabel.textColor = [UIColor whiteColor];
             self.backgroundCover.rangePosition = RANGE_POSITION_BEGIN;
             [self.superview bringSubviewToFront:self];
         } else if (isEndDate) {
+            self.dayLabel.textColor = [UIColor whiteColor];
             self.backgroundCover.rangePosition = RANGE_POSITION_END;
             [self.superview bringSubviewToFront:self];
         } else {

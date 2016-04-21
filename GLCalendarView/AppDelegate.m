@@ -30,23 +30,24 @@
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 
     
-    [GLCalendarView appearance].rowHeight = 54;
-    [GLCalendarView appearance].padding = 6;
+    [GLCalendarView appearance].rowHeight = 48;
+    [GLCalendarView appearance].padding = 20;
 
     [GLCalendarView appearance].weekDayTitleAttributes = @{NSFontAttributeName:[UIFont systemFontOfSize:8], NSForegroundColorAttributeName:[UIColor grayColor]};
     [GLCalendarView appearance].monthCoverAttributes = @{NSFontAttributeName:[UIFont systemFontOfSize:30]};
-    [GLCalendarDayCell appearance].evenMonthBackgroundColor = UIColorFromRGB(0xf5f5f5);
+    [GLCalendarDayCell appearance].oddMonthBackgroundColor = UIColorFromRGB(0xf8f8f8);
+    [GLCalendarDayCell appearance].evenMonthBackgroundColor = UIColorFromRGB(0xf8f8f8);
 
     [GLCalendarDayCell appearance].rangeDisplayMode = RANGE_DISPLAY_MODE_CONTINUOUS;
 
-    [GLCalendarDayCell appearance].dayLabelAttributes = @{NSFontAttributeName:[UIFont systemFontOfSize:20], NSForegroundColorAttributeName:UIColorFromRGB(0x555555)};
-    [GLCalendarDayCell appearance].monthLabelAttributes = @{NSFontAttributeName:[UIFont systemFontOfSize:8]};
+    [GLCalendarDayCell appearance].dayLabelAttributes = @{NSFontAttributeName:[UIFont systemFontOfSize:18], NSForegroundColorAttributeName:UIColorFromRGB(0x4E4E4E)};
+    [GLCalendarDayCell appearance].monthLabelAttributes = @{NSFontAttributeName:[UIFont systemFontOfSize:16], NSForegroundColorAttributeName:UIColorFromRGB(0xFF671B)};
     
     [GLCalendarDayCell appearance].editCoverBorderWidth = 2;
     [GLCalendarDayCell appearance].editCoverBorderColor = UIColorFromRGB(0x366aac);
     [GLCalendarDayCell appearance].editCoverPointSize = 14;
     
-    [GLCalendarDayCell appearance].todayBackgroundColor = UIColorFromRGB(0x366aac);
+    [GLCalendarDayCell appearance].todayBackgroundColor = UIColorFromRGB(0x4E4E4E);
     [GLCalendarDayCell appearance].todayLabelAttributes = @{NSFontAttributeName:[UIFont systemFontOfSize:20]};
 
     return YES;

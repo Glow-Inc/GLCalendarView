@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GLCalendarDayCell.h"
 
 typedef NS_ENUM(NSInteger, RANGE_POSITION) {
     RANGE_POSITION_NONE = 0,
@@ -21,6 +22,7 @@ typedef NS_ENUM(NSInteger, RANGE_POSITION) {
 @property (nonatomic) CGFloat paddingLeft;
 @property (nonatomic) CGFloat paddingRight;
 @property (nonatomic) CGFloat paddingTop;
+@property (nonatomic, strong) UIColor *orangeColor;
 @property (nonatomic, strong) UIColor *fillColor;
 @property (nonatomic, strong) UIColor *strokeColor;
 @property (nonatomic, strong) UIImage *backgroundImage;
@@ -30,6 +32,7 @@ typedef NS_ENUM(NSInteger, RANGE_POSITION) {
 @property (nonatomic) BOOL continuousRangeDisplay;
 @property (nonatomic) CGFloat pointSize;
 @property (nonatomic) CGFloat pointScale;
+@property (nonatomic) CELL_POSITION position;
 - (void)enlargeBeginPoint:(BOOL)enlarge;
 - (void)enlargeEndPoint:(BOOL)enlarge;
 @end

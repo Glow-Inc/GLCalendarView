@@ -31,6 +31,8 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 @property (weak, nonatomic) IBOutlet GLCalendarMonthCoverView *monthCoverView;
 @property (weak, nonatomic) IBOutlet UIView *magnifierContainer;
 @property (weak, nonatomic) IBOutlet UIImageView *maginifierContentView;
+
+@property (nonatomic, strong) NSMutableArray *dates;
 @end
 
 @implementation GLCalendarView
@@ -78,6 +80,7 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
     self.collectionView.dataSource = self;
     self.collectionView.delegate = self;
     [self.collectionView registerNib:[UINib nibWithNibName:@"GLCalendarDayCell" bundle:[NSBundle bundleForClass:self.class]] forCellWithReuseIdentifier:CELL_REUSE_IDENTIFIER];
+    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"empty"];
     
     self.dragBeginDateGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleDragBeginDate:)];
     self.dragEndDateGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleDragEndDate:)];
@@ -185,9 +188,31 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 
 # pragma mark - getter & setter
 
+- (void)updateDates
+{
+    if (_firstDate != nil && _lastDate != nil) {
+        NSDate *placeholder = [NSDate dateWithTimeIntervalSince1970:0];
+        NSInteger days = [GLDateUtils daysBetween:_firstDate and:_lastDate] + 1;
+        _dates = [[NSMutableArray alloc] init];
+        for (int i = 0; i < days; ++i) {
+            NSDate *date = [GLDateUtils dateByAddingDays:i toDate:_firstDate];
+            NSDateComponents *components = [[GLDateUtils calendar] components:NSCalendarUnitDay fromDate:date];
+            if (components.day == 1) {
+                components = [[GLDateUtils calendar] components:NSCalendarUnitWeekday fromDate:date];
+                NSInteger spacingDays = components.weekday == 1 ? 7 : 14;
+                for (int j = 0; j < spacingDays; ++j) {
+                    [_dates addObject:placeholder];
+                }
+            }
+            [_dates addObject:date];
+        }
+    }
+}
+
 - (void)setFirstDate:(NSDate *)firstDate
 {
     _firstDate = [GLDateUtils weekFirstDate:[GLDateUtils cutDate:firstDate]];
+    [self updateDates];
 }
 
 - (NSDate *)firstDate
@@ -201,6 +226,7 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 - (void)setLastDate:(NSDate *)lastDate
 {
     _lastDate = [GLDateUtils weekLastDate:[GLDateUtils cutDate:lastDate]];
+    [self updateDates];
 }
 
 - (NSDate *)lastDate
@@ -220,11 +246,18 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return [GLDateUtils daysBetween:self.firstDate and:self.lastDate] + 1;
+//    return [GLDateUtils daysBetween:self.firstDate and:self.lastDate] + 1;
+    return _dates.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSDate *date = _dates[indexPath.item]; // [self dateForCellAtIndexPath:indexPath];
+
+    if (date == [NSDate dateWithTimeIntervalSince1970:0]) {
+        return [collectionView dequeueReusableCellWithReuseIdentifier:@"empty" forIndexPath:indexPath];
+    }
+
     GLCalendarDayCell *cell = (GLCalendarDayCell *)[collectionView dequeueReusableCellWithReuseIdentifier:CELL_REUSE_IDENTIFIER forIndexPath:indexPath];
     
     CELL_POSITION cellPosition;
@@ -238,8 +271,7 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
     } else {
         cellPosition = POSITION_NORMAL;
     }
-    
-    NSDate *date = [self dateForCellAtIndexPath:indexPath];
+
     if (self.draggingBeginDate && [GLDateUtils date:self.rangeUnderEdit.beginDate isSameDayAsDate:date]) {
         enlargePoint = ENLARGE_BEGIN_POINT;
     } else if (self.draggingEndDate && [GLDateUtils date:self.rangeUnderEdit.endDate isSameDayAsDate:date]) {
@@ -254,7 +286,8 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 
 - (NSDate *)dateForCellAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [GLDateUtils dateByAddingDays:indexPath.item toDate:self.firstDate];
+    return _dates[indexPath.item];
+//    return [GLDateUtils dateByAddingDays:indexPath.item toDate:self.firstDate];
 }
 
 - (GLCalendarDateRange *)selectedRangeForDate:(NSDate *)date
@@ -277,6 +310,7 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
         BOOL canAdd = [self.delegate calenderView:self canAddRangeWithBeginDate:date];
         if (canAdd) {
             GLCalendarDateRange *rangeToAdd = [self.delegate calenderView:self rangeToAddWithBeginDate:date];
+            rangeToAdd.backgroundColor = [UIColor colorWithWhite:0.9215686274509803 alpha:1.0];
             [self addRange:rangeToAdd];
         }
     }
@@ -340,32 +374,32 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 # pragma mark - UIScrollView delegate
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
-    self.monthCoverView.contentSize = self.collectionView.contentSize;
-    self.monthCoverView.hidden = NO;
-    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-        self.monthCoverView.alpha = 1;
-        self.collectionView.alpha = 0.3;
-    } completion:^(BOOL finished) {
-        
-    }];
+//    self.monthCoverView.contentSize = self.collectionView.contentSize;
+//    self.monthCoverView.hidden = NO;
+//    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+//        self.monthCoverView.alpha = 1;
+//        self.collectionView.alpha = 0.3;
+//    } completion:^(BOOL finished) {
+//        
+//    }];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     // update month cover
-    self.monthCoverView.contentOffset = self.collectionView.contentOffset;
+//    self.monthCoverView.contentOffset = self.collectionView.contentOffset;
 }
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView
                      withVelocity:(CGPoint)velocity
               targetContentOffset:(inout CGPoint *)targetContentOffset
 {
-    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-        self.monthCoverView.alpha = 0;
-        self.collectionView.alpha = 1;
-    } completion:^(BOOL finished) {
-        self.monthCoverView.hidden = YES;
-    }];
+//    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+//        self.monthCoverView.alpha = 0;
+//        self.collectionView.alpha = 1;
+//    } completion:^(BOOL finished) {
+//        self.monthCoverView.hidden = YES;
+//    }];
 }
 
 # pragma mark - Edit range
