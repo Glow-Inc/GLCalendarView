@@ -607,7 +607,15 @@ static NSDate *today;
 
 - (CGRect)rectForDate:(NSDate *)date
 {
-    NSInteger dayDiff = [GLDateUtils daysBetween:self.firstDate and:date];
+//    NSInteger dayDiff = [GLDateUtils daysBetween:self.firstDate and:date];
+    NSInteger dayDiff = 0;
+    for (int i = 0; i < _dates.count; ++i) {
+        NSDate *specificDate = _dates[i];
+        if ([specificDate compare: date] == NSOrderedSame) {
+            break;
+        }
+        dayDiff++;
+    }
     NSInteger row = dayDiff / 7;
     NSInteger col = dayDiff % 7;
     return CGRectMake(self.padding + col * self.cellWidth, row * self.rowHeight, self.cellWidth, self.rowHeight);
@@ -616,25 +624,50 @@ static NSDate *today;
 
 - (void)reloadCellOnDate:(NSDate *)date
 {
-    [self reloadFromBeginDate:date toDate:date];
+    for (int i = 0; i < _dates.count; ++i) {
+        NSDate *specificDate = _dates[i];
+        if ([specificDate compare: date] == NSOrderedSame) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
+            [UIView performWithoutAnimation:^{
+                [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
+            }];
+        }
+    }
+//    [self reloadFromBeginDate:date toDate:date];
 }
 
 - (void)reloadFromBeginDate:(NSDate *)beginDate toDate:(NSDate *)endDate
 {
-    NSMutableArray *indexPaths = [NSMutableArray array];
-    NSInteger beginIndex = MAX(0, [GLDateUtils daysBetween:self.firstDate and:beginDate]);
-    NSInteger endIndex = MIN([self collectionView:self.collectionView numberOfItemsInSection:0] - 1, [GLDateUtils daysBetween:self.firstDate and:endDate]);
-    for (NSInteger i = beginIndex; i <= endIndex; i++) {
-        [indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+    NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+    for (int i = 0; i < _dates.count; ++i) {
+        NSDate *specificDate = _dates[i];
+        if (([beginDate compare: specificDate] != NSOrderedDescending) &&
+            ([endDate compare: specificDate] != NSOrderedAscending)) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
+            [indexPaths addObject:indexPath];
+        }
     }
-    // prevent crash: too many update animations on one view - limit is 31 in flight at a time
-    if (indexPaths.count > 30) {
-        [self.collectionView reloadData];
-    } else {
-        [UIView performWithoutAnimation:^{
-            [self.collectionView reloadItemsAtIndexPaths:indexPaths];
-        }];
-    }
+    [UIView performWithoutAnimation:^{
+        [self.collectionView reloadItemsAtIndexPaths:indexPaths];
+    }];
+    return;
+
+
+
+//    NSMutableArray *indexPaths = [NSMutableArray array];
+//    NSInteger beginIndex = MAX(0, [GLDateUtils daysBetween:self.firstDate and:beginDate]);
+//    NSInteger endIndex = MIN([self collectionView:self.collectionView numberOfItemsInSection:0] - 1, [GLDateUtils daysBetween:self.firstDate and:endDate]);
+//    for (NSInteger i = beginIndex; i <= endIndex; i++) {
+//        [indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+//    }
+//    // prevent crash: too many update animations on one view - limit is 31 in flight at a time
+//    if (indexPaths.count > 30) {
+//        [self.collectionView reloadData];
+//    } else {
+//        [UIView performWithoutAnimation:^{
+//            [self.collectionView reloadItemsAtIndexPaths:indexPaths];
+//        }];
+//    }
 }
 
 - (NSIndexPath *)indexPathForDate:(NSDate *)date

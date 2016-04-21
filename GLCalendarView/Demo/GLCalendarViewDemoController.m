@@ -27,14 +27,14 @@
     // Do any additional setup after loading the view, typically from a nib.
     self.calendarView.delegate = self;
     self.calendarView.showMagnifier = YES;
-
-    [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-    self.navigationController.navigationBar.shadowImage = nil;
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
+
+    [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = nil;
     
     NSDate *today = [NSDate date];
     
