@@ -114,7 +114,9 @@
     if (self.rangePosition == RANGE_POSITION_NONE) {
         return;
     }
-    
+
+    UIColor *orangeColor = [UIColor colorWithRed:1.0 green:0.403921568627451 blue:0.10588235294117647 alpha:1.0];
+
     CGFloat paddingLeft = self.paddingLeft;
     CGFloat paddingRight = self.paddingRight;
     CGFloat paddingTop = self.paddingTop;
@@ -136,7 +138,7 @@
         }
         path = [UIBezierPath bezierPathWithOvalInRect:rect];
         [path closePath];
-        [self.fillColor setFill];
+        [orangeColor setFill];
         [path fill];
         return;
     }
@@ -172,7 +174,6 @@
     [path fill];
 
     if (self.rangePosition == RANGE_POSITION_BEGIN || self.rangePosition == RANGE_POSITION_END) {
-        UIColor *orangeColor = [UIColor colorWithRed:1.0 green:0.403921568627451 blue:0.10588235294117647 alpha:1.0];
         path = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(borderWidth + paddingLeft, borderWidth + paddingTop, width - borderWidth * 2 - paddingLeft - paddingRight,  height - borderWidth * 2 - paddingTop * 2)];
         [path closePath];
         [orangeColor setFill];

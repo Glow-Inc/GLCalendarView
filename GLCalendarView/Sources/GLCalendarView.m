@@ -182,8 +182,14 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 
 - (void)scrollToDate:(NSDate *)date animated:(BOOL)animated;
 {
-    NSInteger item = [GLDateUtils daysBetween:self.firstDate and:date];
-    [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:item inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:animated];
+    for (int i = 0; i < _dates.count; ++i) {
+        NSDate *specificDate = _dates[i];
+        if ([specificDate compare: date] == NSOrderedSame) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
+            [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:animated];
+            break;
+        }
+    }
 }
 
 # pragma mark - getter & setter

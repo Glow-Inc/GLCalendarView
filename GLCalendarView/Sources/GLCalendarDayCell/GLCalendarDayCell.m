@@ -150,7 +150,9 @@
         self.backgroundCover.backgroundImage = self.range.backgroundImage ?: nil;
         UIColor *textColor = self.range.textColor ?: [UIColor whiteColor];
 //        self.monthLabel.textColor = textColor;
-//        self.dayLabel.textColor = textColor;
+        if (self.range.beginDate == self.range.endDate) {
+            self.dayLabel.textColor = [UIColor whiteColor];
+        }
 
         // check position in range
         BOOL isBeginDate = [GLDateUtils date:self.date isSameDayAsDate:self.range.beginDate];
