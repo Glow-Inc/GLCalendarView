@@ -24,16 +24,16 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    [UINavigationBar appearance].barTintColor = UIColorFromRGB(0x79a9cd);
+    [UINavigationBar appearance].barTintColor = [UIColor whiteColor]; // UIColorFromRGB(0x79a9cd);
     [UINavigationBar appearance].tintColor = [UIColor whiteColor];
-    [UINavigationBar appearance].titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+//    [UINavigationBar appearance].titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
+//    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 
     
     [GLCalendarView appearance].rowHeight = 48;
     [GLCalendarView appearance].padding = 20;
 
-    [GLCalendarView appearance].weekDayTitleAttributes = @{NSFontAttributeName:[UIFont systemFontOfSize:8], NSForegroundColorAttributeName:[UIColor grayColor]};
+    [GLCalendarView appearance].weekDayTitleAttributes = @{NSFontAttributeName:[UIFont systemFontOfSize:10], NSForegroundColorAttributeName:UIColorFromRGB(0x4E4E4E)};
     [GLCalendarView appearance].monthCoverAttributes = @{NSFontAttributeName:[UIFont systemFontOfSize:30]};
     [GLCalendarDayCell appearance].oddMonthBackgroundColor = UIColorFromRGB(0xf8f8f8);
     [GLCalendarDayCell appearance].evenMonthBackgroundColor = UIColorFromRGB(0xf8f8f8);

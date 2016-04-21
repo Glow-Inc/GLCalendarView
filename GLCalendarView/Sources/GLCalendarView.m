@@ -312,6 +312,13 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
             GLCalendarDateRange *rangeToAdd = [self.delegate calenderView:self rangeToAddWithBeginDate:date];
             rangeToAdd.backgroundColor = [UIColor colorWithWhite:0.9215686274509803 alpha:1.0];
             [self addRange:rangeToAdd];
+
+            NSIndexPath *nextIndexPath = [NSIndexPath indexPathForItem:indexPath.item+1 inSection:0];
+            NSIndexPath *nextIndexPath2 = [NSIndexPath indexPathForItem:indexPath.item+2 inSection:0];
+            NSIndexPath *nextIndexPath3 = [NSIndexPath indexPathForItem:indexPath.item+3 inSection:0];
+            [UIView performWithoutAnimation:^{
+                [self.collectionView reloadItemsAtIndexPaths:@[indexPath, nextIndexPath, nextIndexPath2, nextIndexPath3]];
+            }];
         }
     }
 }

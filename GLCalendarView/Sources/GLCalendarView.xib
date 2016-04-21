@@ -34,7 +34,7 @@
                 </scrollView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jKE-iR-rqI" userLabel="weekdays">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="28"/>
-                    <color key="backgroundColor" red="0.98431372549999996" green="0.98039215690000003" blue="0.96862745100000003" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="28" id="HPK-EI-AnG"/>
                     </constraints>
