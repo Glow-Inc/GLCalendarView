@@ -142,6 +142,10 @@
     if ([self isFuture]) {
         [self setFutureDayLabelText:[NSString stringWithFormat:@"%ld", (long)day]];
     }
+
+    if (([_date compare:[NSDate date]] == NSOrderedAscending) && ![self isToday]) {
+        self.dayLabel.textColor = [UIColor colorWithWhite:0.75 alpha:1.0];
+    }
     
     // background cover
     if (self.range) {
