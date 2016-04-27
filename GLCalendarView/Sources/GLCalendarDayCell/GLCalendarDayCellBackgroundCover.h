@@ -35,4 +35,5 @@ typedef NS_ENUM(NSInteger, RANGE_POSITION) {
 @property (nonatomic) CELL_POSITION position;
 - (void)enlargeBeginPoint:(BOOL)enlarge;
 - (void)enlargeEndPoint:(BOOL)enlarge;
+- (void)setRangePosition:(RANGE_POSITION)rangePosition enlarge:(BOOL)enlarge;
 @end

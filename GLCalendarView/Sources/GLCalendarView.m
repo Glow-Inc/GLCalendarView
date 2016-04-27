@@ -27,7 +27,6 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 @property (nonatomic) BOOL draggingEndDate;
 
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
-@property (weak, nonatomic) IBOutlet UIView *weekDayTitle;
 @property (weak, nonatomic) IBOutlet GLCalendarMonthCoverView *monthCoverView;
 @property (weak, nonatomic) IBOutlet UIView *magnifierContainer;
 @property (weak, nonatomic) IBOutlet UIImageView *maginifierContentView;
@@ -108,7 +107,7 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 
 - (void)setupWeekDayTitle
 {
-    [self.weekDayTitle.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+//    [self.weekDayTitle.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     CGFloat width = (CGRectGetWidth(self.bounds) - self.padding * 2) / 7;
     CGFloat centerY = self.weekDayTitle.bounds.size.height / 2;
     NSArray *titles;
@@ -205,7 +204,7 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
             NSDateComponents *components = [[GLDateUtils calendar] components:NSCalendarUnitDay fromDate:date];
             if (components.day == 1) {
                 components = [[GLDateUtils calendar] components:NSCalendarUnitWeekday fromDate:date];
-                NSInteger spacingDays = components.weekday == 1 ? 7 : 14;
+                NSInteger spacingDays = 7; // components.weekday == 1 ? 7 : 14;
                 for (int j = 0; j < spacingDays; ++j) {
                     [_dates addObject:placeholder];
                 }
@@ -312,18 +311,18 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 {
     NSDate *date = [self dateForCellAtIndexPath:indexPath];
     GLCalendarDateRange *range = [self selectedRangeForDate:date];
-    if (!range) {
+    if (!range || ([range.beginDate compare:date] != NSOrderedSame)) {
         BOOL canAdd = [self.delegate calenderView:self canAddRangeWithBeginDate:date];
         if (canAdd) {
             GLCalendarDateRange *rangeToAdd = [self.delegate calenderView:self rangeToAddWithBeginDate:date];
             rangeToAdd.backgroundColor = [UIColor colorWithWhite:0.9215686274509803 alpha:1.0];
             [self addRange:rangeToAdd];
 
-            NSIndexPath *nextIndexPath = [NSIndexPath indexPathForItem:indexPath.item+1 inSection:0];
-            NSIndexPath *nextIndexPath2 = [NSIndexPath indexPathForItem:indexPath.item+2 inSection:0];
-            NSIndexPath *nextIndexPath3 = [NSIndexPath indexPathForItem:indexPath.item+3 inSection:0];
+//            NSIndexPath *nextIndexPath = [NSIndexPath indexPathForItem:indexPath.item+1 inSection:0];
+//            NSIndexPath *nextIndexPath2 = [NSIndexPath indexPathForItem:indexPath.item+2 inSection:0];
+//            NSIndexPath *nextIndexPath3 = [NSIndexPath indexPathForItem:indexPath.item+3 inSection:0];
             [UIView performWithoutAnimation:^{
-                [self.collectionView reloadItemsAtIndexPaths:@[indexPath, nextIndexPath, nextIndexPath2, nextIndexPath3]];
+                [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
             }];
         }
     }
@@ -441,7 +440,7 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
     if (recognizer == self.dragBeginDateGesture) {
         CGPoint location = [recognizer locationInView:self.collectionView];
         CGRect rectForBeginDate = [self rectForDate:self.rangeUnderEdit.beginDate];
-        rectForBeginDate.origin.x -= self.cellWidth / 2;
+//        rectForBeginDate.origin.x -= self.cellWidth / 2;
         if (CGRectContainsPoint(rectForBeginDate, location)) {
             return YES;
         }
@@ -449,7 +448,7 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
     if (recognizer == self.dragEndDateGesture) {
         CGPoint location = [recognizer locationInView:self.collectionView];
         CGRect rectForEndDate = [self rectForDate:self.rangeUnderEdit.endDate];
-        rectForEndDate.origin.x += self.cellWidth / 2;
+//        rectForEndDate.origin.x += self.cellWidth / 2;
         if (CGRectContainsPoint(rectForEndDate, location)) {
             return YES;
         }

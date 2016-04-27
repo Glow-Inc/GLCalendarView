@@ -31,6 +31,7 @@ typedef NS_ENUM(NSInteger, RANGE_DISPLAY_MODE) {
 @property (nonatomic, strong) UIColor *evenMonthBackgroundColor UI_APPEARANCE_SELECTOR;
 @property (nonatomic, strong) UIColor *oddMonthBackgroundColor UI_APPEARANCE_SELECTOR;
 @property (nonatomic, strong) NSDictionary *dayLabelAttributes UI_APPEARANCE_SELECTOR;
+@property (nonatomic, strong) NSDictionary *dragDayLabelAttributes UI_APPEARANCE_SELECTOR;
 @property (nonatomic, strong) NSDictionary *futureDayLabelAttributes UI_APPEARANCE_SELECTOR;
 @property (nonatomic, strong) NSDictionary *todayLabelAttributes UI_APPEARANCE_SELECTOR;
 @property (nonatomic, strong) NSDictionary *monthLabelAttributes UI_APPEARANCE_SELECTOR;

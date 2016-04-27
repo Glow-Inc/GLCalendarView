@@ -34,14 +34,21 @@
 @interface GLCalendarDayCellBackgroundCover()
 @property (nonatomic, strong) GLCalendarRangePoint *beginPoint;
 @property (nonatomic, strong) GLCalendarRangePoint *endPoint;
+@property (nonatomic, assign) BOOL enlarge;
 @end
 @implementation GLCalendarDayCellBackgroundCover
 
-- (void)setRangePosition:(RANGE_POSITION)rangePosition
+- (void)setRangePosition:(RANGE_POSITION)rangePosition enlarge:(BOOL)enlarge
 {
     _rangePosition = rangePosition;
+    _enlarge = enlarge;
     self.inEdit = self.inEdit;
     [self setNeedsDisplay];
+}
+
+- (void)setRangePosition:(RANGE_POSITION)rangePosition
+{
+    [self setRangePosition: rangePosition enlarge: NO];
 }
 
 - (void)setBorderWidth:(CGFloat)borderWidth
@@ -59,7 +66,7 @@
 - (void)setInEdit:(BOOL)inEdit
 {
     _inEdit = inEdit;
-    if (inEdit) {
+    if (NO) {
         if (self.rangePosition == RANGE_POSITION_BEGIN) {
             self.beginPoint.center = CGPointMake(self.borderWidth / 2 + self.paddingLeft, self.bounds.size.height / 2);
             [self addSubview:self.beginPoint];
@@ -174,7 +181,11 @@
     [path fill];
 
     if (self.rangePosition == RANGE_POSITION_BEGIN || self.rangePosition == RANGE_POSITION_END) {
-        path = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(borderWidth + paddingLeft, borderWidth + paddingTop, width - borderWidth * 2 - paddingLeft - paddingRight,  height - borderWidth * 2 - paddingTop * 2)];
+        if (_enlarge) {
+            path = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(borderWidth + paddingLeft + 3.0, borderWidth + paddingTop + 3.0, width - borderWidth * 2 - paddingLeft - paddingRight - 6.0,  height - borderWidth * 2 - paddingTop * 2 - 6.0)];
+        } else {
+            path = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(borderWidth + paddingLeft, borderWidth + paddingTop, width - borderWidth * 2 - paddingLeft - paddingRight,  height - borderWidth * 2 - paddingTop * 2)];
+        }
         [path closePath];
         [orangeColor setFill];
         [path fill];
@@ -186,6 +197,9 @@
     if (!self.isToday) {
         return;
     }
+    if (self.rangePosition == RANGE_POSITION_BEGIN || self.rangePosition == RANGE_POSITION_END) {
+        return;
+    }
     CGFloat paddingLeft = self.paddingLeft;
     CGFloat paddingRight = self.paddingRight;
     CGFloat paddingTop = self.paddingTop;
@@ -195,7 +209,7 @@
     CGFloat height = rect.size.height;
     CGFloat width = rect.size.width;
             
-    UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(borderWidth + paddingLeft, borderWidth + paddingTop, width - borderWidth * 2 - paddingLeft - paddingRight,  height - borderWidth * 2 - paddingTop * 2)];
+    UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(borderWidth + paddingLeft + 1.0, borderWidth + paddingTop + 1.0, width - borderWidth * 2 - paddingLeft - paddingRight - 2.0,  height - borderWidth * 2 - paddingTop * 2 - 2.0)];
     [path closePath];
     [self.fillColor setStroke];
     [path stroke];

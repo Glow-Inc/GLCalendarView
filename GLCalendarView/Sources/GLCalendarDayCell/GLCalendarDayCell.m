@@ -44,6 +44,7 @@
     self.evenMonthBackgroundColor = appearance.evenMonthBackgroundColor ?: [UIColor whiteColor];
     self.oddMonthBackgroundColor = appearance.oddMonthBackgroundColor ?: [UIColor whiteColor];
     self.dayLabelAttributes = appearance.dayLabelAttributes ?: @{NSFontAttributeName:[UIFont systemFontOfSize:14]};
+    self.dragDayLabelAttributes = appearance.dragDayLabelAttributes ?: @{NSFontAttributeName:[UIFont boldSystemFontOfSize:14]};
     self.futureDayLabelAttributes = appearance.futureDayLabelAttributes ?: self.dayLabelAttributes;
     self.monthLabelAttributes = appearance.monthLabelAttributes ?: @{NSFontAttributeName:[UIFont systemFontOfSize:14]};
     self.todayLabelAttributes = appearance.todayLabelAttributes ?: @{NSFontAttributeName:[UIFont boldSystemFontOfSize:22]};
@@ -85,6 +86,7 @@
     
     NSInteger day = components.day;
     NSInteger month = components.month;
+    BOOL enlarge = self.enlargePoint != ENLARGE_NONE;
 
     // month background color
     if (month % 2 == 0) {
@@ -119,9 +121,9 @@
         todayFormatter.dateStyle = NSDateFormatterMediumStyle;
         todayFormatter.timeStyle = NSDateFormatterNoStyle;
         todayFormatter.doesRelativeDateFormatting = YES;
+        [self setMonthLabelText:@""];
 //        [self setMonthLabelText:[todayFormatter stringFromDate:[NSDate date]]];
         self.dayLabel.textColor = [UIColor whiteColor];
-        [self setDayLabelText:[NSString stringWithFormat:@"%ld", (long)day]];
         self.backgroundCover.isToday = YES;
         self.backgroundCover.fillColor = self.todayBackgroundColor;
         self.backgroundCover.orangeColor = self.orangeColor;
@@ -129,16 +131,22 @@
         self.monthLabel.textColor = [UIColor redColor];
         [self setMonthLabelText:[self monthText:month]];
         self.dayLabel.textColor = [UIColor redColor];
-        [self setDayLabelText:[NSString stringWithFormat:@"%ld", (long)day]];
         self.backgroundCover.isToday = NO;
     } else {
         self.monthLabel.textColor = [UIColor blackColor];
         [self setMonthLabelText:@""];
         self.dayLabel.textColor = [UIColor blackColor];
-        [self setDayLabelText:[NSString stringWithFormat:@"%ld", (long)day]];
         self.backgroundCover.isToday = NO;
     }
-    
+
+    if (enlarge) {
+        [self setDragDayLabelText:[NSString stringWithFormat:@"%ld", (long)day]];
+//        self.dayLabel.font = [UIFont boldSystemFontOfSize:14];
+    } else {
+        [self setDayLabelText:[NSString stringWithFormat:@"%ld", (long)day]];
+//        self.dayLabel.font = [UIFont systemFontOfSize:14];
+    }
+
     if ([self isFuture]) {
         [self setFutureDayLabelText:[NSString stringWithFormat:@"%ld", (long)day]];
     }
@@ -163,15 +171,15 @@
         BOOL isEndDate = [GLDateUtils date:self.date isSameDayAsDate:self.range.endDate];
         
         if (isBeginDate && isEndDate) {
-            self.backgroundCover.rangePosition = RANGE_POSITION_SINGLE;
+            [self.backgroundCover setRangePosition:RANGE_POSITION_SINGLE enlarge:enlarge];
             [self.superview bringSubviewToFront:self];
         } else if (isBeginDate) {
             self.dayLabel.textColor = [UIColor whiteColor];
-            self.backgroundCover.rangePosition = RANGE_POSITION_BEGIN;
+            [self.backgroundCover setRangePosition:RANGE_POSITION_BEGIN enlarge:enlarge];
             [self.superview bringSubviewToFront:self];
         } else if (isEndDate) {
             self.dayLabel.textColor = [UIColor whiteColor];
-            self.backgroundCover.rangePosition = RANGE_POSITION_END;
+            [self.backgroundCover setRangePosition:RANGE_POSITION_END enlarge:enlarge];
             [self.superview bringSubviewToFront:self];
         } else {
             self.backgroundCover.rangePosition = RANGE_POSITION_MIDDLE;
@@ -183,19 +191,24 @@
     
     self.backgroundCover.inEdit = self.inEdit;
     
-    if (self.enlargePoint == ENLARGE_BEGIN_POINT) {
-        [self.backgroundCover enlargeBeginPoint:YES];
-        [self.backgroundCover enlargeEndPoint:NO];
-    } else if (self.enlargePoint == ENLARGE_END_POINT) {
-        [self.backgroundCover enlargeBeginPoint:NO];
-        [self.backgroundCover enlargeEndPoint:YES];
-    } else {
-        [self.backgroundCover enlargeBeginPoint:NO];
-        [self.backgroundCover enlargeEndPoint:NO];
-    }
+//    if (self.enlargePoint == ENLARGE_BEGIN_POINT) {
+//        [self.backgroundCover enlargeBeginPoint:YES];
+//        [self.backgroundCover enlargeEndPoint:NO];
+//    } else if (self.enlargePoint == ENLARGE_END_POINT) {
+//        [self.backgroundCover enlargeBeginPoint:NO];
+//        [self.backgroundCover enlargeEndPoint:YES];
+//    } else {
+//        [self.backgroundCover enlargeBeginPoint:NO];
+//        [self.backgroundCover enlargeEndPoint:NO];
+//    }
 }
 
 - (void)setDayLabelText:(NSString *)text
+{
+    self.dayLabel.attributedText = [[NSAttributedString alloc] initWithString:text attributes:self.dayLabelAttributes];
+}
+
+- (void)setDragDayLabelText:(NSString *)text
 {
     self.dayLabel.attributedText = [[NSAttributedString alloc] initWithString:text attributes:self.dayLabelAttributes];
 }
