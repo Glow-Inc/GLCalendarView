@@ -169,6 +169,19 @@
         // check position in range
         BOOL isBeginDate = [GLDateUtils date:self.date isSameDayAsDate:self.range.beginDate];
         BOOL isEndDate = [GLDateUtils date:self.date isSameDayAsDate:self.range.endDate];
+
+        NSCalendar *calendar = [NSCalendar currentCalendar];
+        NSDateComponents *comps = [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit fromDate:self.date];
+        if ([comps day] == 1) {
+            self.backgroundCover.position = POSITION_LEFT_EDGE;
+        } else {
+            [comps setMonth:[comps month] + 1];
+            [comps setDay:0];
+            NSDate *lastDayOfMonth = [calendar dateFromComponents:comps];
+            if ([lastDayOfMonth compare:self.date] == NSOrderedSame) {
+                self.backgroundCover.position = POSITION_RIGHT_EDGE;
+            }
+        }
         
         if (isBeginDate && isEndDate) {
             [self.backgroundCover setRangePosition:RANGE_POSITION_SINGLE enlarge:enlarge];
