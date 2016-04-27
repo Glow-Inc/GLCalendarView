@@ -150,7 +150,7 @@
         return;
     }
 
-    if (self.rangePosition == RANGE_POSITION_SINGLE || (self.rangePosition == RANGE_POSITION_BEGIN && self.position == POSITION_RIGHT_EDGE) || (self.rangePosition == RANGE_POSITION_END && self.position == POSITION_LEFT_EDGE)) {
+    if (self.rangePosition == RANGE_POSITION_SINGLE || (self.rangePosition == RANGE_POSITION_BEGIN && self.position == POSITION_RIGHT_EDGE) || (self.rangePosition == RANGE_POSITION_END && self.position == POSITION_LEFT_EDGE) || (self.position == POSITION_BOTH_EDGES)) {
         path = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(borderWidth + paddingLeft, borderWidth + paddingTop, width - borderWidth * 2 - paddingLeft - paddingRight,  height - borderWidth * 2 - paddingTop * 2)];
         [path closePath];
     } else if (self.rangePosition == RANGE_POSITION_BEGIN || self.position == POSITION_LEFT_EDGE) {
