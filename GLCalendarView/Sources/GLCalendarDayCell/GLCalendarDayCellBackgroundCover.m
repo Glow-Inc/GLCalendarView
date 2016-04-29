@@ -180,7 +180,7 @@
     [self.fillColor setFill];
     [path fill];
 
-    if (self.rangePosition == RANGE_POSITION_BEGIN || self.rangePosition == RANGE_POSITION_END) {
+    if (self.rangePosition == RANGE_POSITION_BEGIN || self.rangePosition == RANGE_POSITION_END || self.rangePosition == RANGE_POSITION_SINGLE) {
         if (_enlarge) {
             path = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(borderWidth + paddingLeft + 3.0, borderWidth + paddingTop + 3.0, width - borderWidth * 2 - paddingLeft - paddingRight - 6.0,  height - borderWidth * 2 - paddingTop * 2 - 6.0)];
         } else {
