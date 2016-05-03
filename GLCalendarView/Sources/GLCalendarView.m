@@ -311,7 +311,7 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 {
     NSDate *date = [self dateForCellAtIndexPath:indexPath];
     GLCalendarDateRange *range = [self selectedRangeForDate:date];
-    if (!range || ([range.beginDate compare:date] != NSOrderedSame)) {
+    if (!range || ([range.beginDate compare:date] != NSOrderedSame) || _allowSameBeginEndDates) {
         BOOL canAdd = [self.delegate calenderView:self canAddRangeWithBeginDate:date];
         if (canAdd) {
             GLCalendarDateRange *rangeToAdd = [self.delegate calenderView:self rangeToAddWithBeginDate:date];
