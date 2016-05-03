@@ -197,7 +197,7 @@
     if (!self.isToday) {
         return;
     }
-    if (self.rangePosition == RANGE_POSITION_BEGIN || self.rangePosition == RANGE_POSITION_END) {
+    if (self.rangePosition == RANGE_POSITION_BEGIN || self.rangePosition == RANGE_POSITION_END || self.rangePosition == RANGE_POSITION_SINGLE) {
         return;
     }
     CGFloat paddingLeft = self.paddingLeft;
