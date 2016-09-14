@@ -160,7 +160,7 @@
         // configure look when in range
         self.backgroundCover.fillColor = self.range.backgroundColor ?: [UIColor clearColor];
         self.backgroundCover.backgroundImage = self.range.backgroundImage ?: nil;
-        UIColor *textColor = self.range.textColor ?: [UIColor whiteColor];
+//        UIColor *textColor = self.range.textColor ?: [UIColor whiteColor];
 //        self.monthLabel.textColor = textColor;
         if (self.range.beginDate == self.range.endDate) {
             self.dayLabel.textColor = [UIColor whiteColor];

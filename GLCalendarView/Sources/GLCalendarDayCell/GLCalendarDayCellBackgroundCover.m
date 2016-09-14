@@ -66,28 +66,30 @@
 - (void)setInEdit:(BOOL)inEdit
 {
     _inEdit = inEdit;
-    if (NO) {
-        if (self.rangePosition == RANGE_POSITION_BEGIN) {
-            self.beginPoint.center = CGPointMake(self.borderWidth / 2 + self.paddingLeft, self.bounds.size.height / 2);
-            [self addSubview:self.beginPoint];
-            [_endPoint removeFromSuperview];
-        } else if (self.rangePosition == RANGE_POSITION_END) {
-            self.endPoint.center = CGPointMake(self.bounds.size.width - self.borderWidth / 2 - self.paddingRight, self.bounds.size.height / 2);
-            [self addSubview:self.endPoint];
-            [_beginPoint removeFromSuperview];
-        } else if (self.rangePosition == RANGE_POSITION_SINGLE) {
-            self.beginPoint.center = CGPointMake(self.borderWidth / 2 + self.paddingLeft, self.bounds.size.height / 2);
-            [self addSubview:self.beginPoint];
-            self.endPoint.center = CGPointMake(self.bounds.size.width - self.borderWidth / 2 - self.paddingRight, self.bounds.size.height / 2);
-            [self addSubview:self.endPoint];
-        } else {
-            [_beginPoint removeFromSuperview];
-            [_endPoint removeFromSuperview];
-        }
-    } else {
-        [_beginPoint removeFromSuperview];
-        [_endPoint removeFromSuperview];
-    }
+//    if (NO) {
+//        if (self.rangePosition == RANGE_POSITION_BEGIN) {
+//            self.beginPoint.center = CGPointMake(self.borderWidth / 2 + self.paddingLeft, self.bounds.size.height / 2);
+//            [self addSubview:self.beginPoint];
+//            [_endPoint removeFromSuperview];
+//        } else if (self.rangePosition == RANGE_POSITION_END) {
+//            self.endPoint.center = CGPointMake(self.bounds.size.width - self.borderWidth / 2 - self.paddingRight, self.bounds.size.height / 2);
+//            [self addSubview:self.endPoint];
+//            [_beginPoint removeFromSuperview];
+//        } else if (self.rangePosition == RANGE_POSITION_SINGLE) {
+//            self.beginPoint.center = CGPointMake(self.borderWidth / 2 + self.paddingLeft, self.bounds.size.height / 2);
+//            [self addSubview:self.beginPoint];
+//            self.endPoint.center = CGPointMake(self.bounds.size.width - self.borderWidth / 2 - self.paddingRight, self.bounds.size.height / 2);
+//            [self addSubview:self.endPoint];
+//        } else {
+//            [_beginPoint removeFromSuperview];
+//            [_endPoint removeFromSuperview];
+//        }
+//    } else {
+//        [_beginPoint removeFromSuperview];
+//        [_endPoint removeFromSuperview];
+//    }
+    [_beginPoint removeFromSuperview];
+    [_endPoint removeFromSuperview];
     [self setNeedsDisplay];
 }
 
