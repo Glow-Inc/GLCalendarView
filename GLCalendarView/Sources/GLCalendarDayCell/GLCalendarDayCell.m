@@ -117,6 +117,7 @@
         todayFormatter.dateStyle = NSDateFormatterMediumStyle;
         todayFormatter.timeStyle = NSDateFormatterNoStyle;
         todayFormatter.doesRelativeDateFormatting = YES;
+        [todayFormatter setLocale:[[GLDateUtils calendar] locale]];
         [self setMonthLabelText:[todayFormatter stringFromDate:[NSDate date]]];
         self.dayLabel.textColor = [UIColor whiteColor];
         [self setTodayLabelText:[NSString stringWithFormat:@"%ld", (long)day]];
@@ -219,7 +220,9 @@
 static NSArray *months;
 - (NSString *)monthText:(NSInteger)month {
     if (!months) {
-        months = [[[[NSDateFormatter alloc] init] shortStandaloneMonthSymbols] valueForKeyPath:@"capitalizedString"];
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setLocale:[[GLDateUtils calendar] locale]];
+        months = [[dateFormatter shortStandaloneMonthSymbols] valueForKeyPath:@"capitalizedString"];
     }
     return [months objectAtIndex:(month - 1)];
 }

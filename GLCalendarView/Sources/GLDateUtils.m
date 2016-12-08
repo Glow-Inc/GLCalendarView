@@ -133,7 +133,9 @@
 static NSArray *months;
 + (NSString *)monthText:(NSInteger)month {
     if (!months) {
-        months = [[[NSDateFormatter alloc] init] shortStandaloneMonthSymbols];
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setLocale:[[GLDateUtils calendar] locale]];
+        months = [dateFormatter shortStandaloneMonthSymbols];
     }
     return [months objectAtIndex:(month - 1)];
 }
