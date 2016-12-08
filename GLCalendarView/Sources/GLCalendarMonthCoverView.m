@@ -27,6 +27,7 @@
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
     NSDateFormatter *monthFormatter = [[NSDateFormatter alloc] init];
+    [monthFormatter setLocale:[[GLDateUtils calendar] locale]];
     monthFormatter.dateFormat = @"YYYY\nMMMM";
 
     NSDateComponents *today = [calendar components:NSCalendarUnitYear fromDate:[NSDate date]];
