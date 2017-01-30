@@ -82,7 +82,7 @@
 {
 //    NSLog(@"update ui: %@ %d", [GLDateUtils descriptionForDate:self.date], _enlargePoint);
 
-    NSDateComponents *components = [[GLDateUtils calendar] components:NSCalendarUnitDay|NSCalendarUnitMonth fromDate:self.date];
+    NSDateComponents *components = [self.calendar components:NSCalendarUnitDay|NSCalendarUnitMonth fromDate:self.date];
     
     NSInteger day = components.day;
     NSInteger month = components.month;

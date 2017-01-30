@@ -201,9 +201,9 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
         _dates = [[NSMutableArray alloc] init];
         for (int i = 0; i < days; ++i) {
             NSDate *date = [GLDateUtils dateByAddingDays:i toDate:_firstDate];
-            NSDateComponents *components = [[GLDateUtils calendar] components:NSCalendarUnitDay fromDate:date];
+            NSDateComponents *components = [self.calendar components:NSCalendarUnitDay fromDate:date];
             if (components.day == 1) {
-                components = [[GLDateUtils calendar] components:NSCalendarUnitWeekday fromDate:date];
+                components = [self.calendar components:NSCalendarUnitWeekday fromDate:date];
                 NSInteger spacingDays = 7; // components.weekday == 1 ? 7 : 14;
                 for (int j = 0; j < spacingDays; ++j) {
                     [_dates addObject:placeholder];
@@ -264,6 +264,7 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
     }
 
     GLCalendarDayCell *cell = (GLCalendarDayCell *)[collectionView dequeueReusableCellWithReuseIdentifier:CELL_REUSE_IDENTIFIER forIndexPath:indexPath];
+    cell.calendar = self.calendar;
     
     CELL_POSITION cellPosition;
     ENLARGE_POINT enlargePoint;

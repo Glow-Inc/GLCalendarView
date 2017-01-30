@@ -28,13 +28,13 @@
 }
 
 + (NSCalendar *)calendar {
-    NSMutableDictionary *threadDictionary = [[NSThread currentThread] threadDictionary];
-    NSCalendar *cal = [threadDictionary objectForKey:@"GLCalendar"];
-    if (!cal) {
+//    NSMutableDictionary *threadDictionary = [[NSThread currentThread] threadDictionary];
+    NSCalendar *cal; // = [threadDictionary objectForKey:@"GLCalendar"];
+//    if (!cal) {
         cal = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
         cal.locale = [NSLocale currentLocale];
-        [threadDictionary setObject:cal forKey:@"GLCalendar"];
-    }
+//        [threadDictionary setObject:cal forKey:@"GLCalendar"];
+//    }
     return cal;
 }
 
