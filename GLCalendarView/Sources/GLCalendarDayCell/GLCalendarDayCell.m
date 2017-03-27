@@ -171,7 +171,7 @@
         BOOL isEndDate = [GLDateUtils date:self.date isSameDayAsDate:self.range.endDate];
 
         NSCalendar *calendar = [NSCalendar currentCalendar];
-        NSDateComponents *comps = [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSWeekdayCalendarUnit fromDate:self.date];
+        NSDateComponents *comps = [calendar components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitWeekday fromDate:self.date];
         if ([comps day] == 1) {
             if ([comps weekday] == 7) {
                 self.backgroundCover.position = POSITION_BOTH_EDGES;
