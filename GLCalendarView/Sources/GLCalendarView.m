@@ -26,6 +26,9 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 @property (nonatomic) BOOL draggingBeginDate;
 @property (nonatomic) BOOL draggingEndDate;
 
+@property (nonatomic, strong) NSDateComponents *firstDateComponents;
+@property (nonatomic, strong) NSDateComponents *lastDateComponents;
+
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UIView *weekDayTitle;
 @property (weak, nonatomic) IBOutlet GLCalendarMonthCoverView *monthCoverView;
@@ -34,9 +37,6 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 @end
 
 @implementation GLCalendarView
-
-@synthesize firstDate = _firstDate;
-@synthesize lastDate = _lastDate;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -187,28 +187,35 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 
 - (void)setFirstDate:(NSDate *)firstDate
 {
-    _firstDate = [GLDateUtils weekFirstDate:[GLDateUtils cutDate:firstDate]];
+    NSDate *date = [GLDateUtils weekFirstDate:[GLDateUtils cutDate:firstDate]];
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    self.firstDateComponents = [calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:date];
 }
 
 - (NSDate *)firstDate
 {
-    if (!_firstDate) {
+    if (!self.firstDateComponents) {
         self.firstDate = [GLDateUtils dateByAddingDays:-365 toDate:[NSDate date]];
     }
-    return _firstDate;
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    
+    return [calendar dateFromComponents:self.firstDateComponents];
 }
 
 - (void)setLastDate:(NSDate *)lastDate
 {
-    _lastDate = [GLDateUtils weekLastDate:[GLDateUtils cutDate:lastDate]];
+    NSDate *date = [GLDateUtils weekLastDate:[GLDateUtils cutDate:lastDate]];
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    self.lastDateComponents = [calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:lastDate];
 }
 
 - (NSDate *)lastDate
 {
-    if (!_lastDate) {
+    if (!self.lastDateComponents) {
         self.lastDate = [GLDateUtils dateByAddingDays:30 toDate:[NSDate date]];
     }
-    return _lastDate;
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    return [calendar dateFromComponents:self.lastDateComponents];
 }
 
 # pragma mark - UICollectionView data source
