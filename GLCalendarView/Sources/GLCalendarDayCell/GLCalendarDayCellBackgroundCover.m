@@ -124,7 +124,7 @@
         return;
     }
 
-    UIColor *orangeColor = [UIColor colorWithRed:1.0 green:0.403921568627451 blue:0.10588235294117647 alpha:1.0];
+    UIColor *orangeColor = [UIColor colorWithRed:0.9411764706 green:0.2862745098 blue:0.137254902 alpha:1.0];
 
     CGFloat paddingLeft = self.paddingLeft;
     CGFloat paddingRight = self.paddingRight;
