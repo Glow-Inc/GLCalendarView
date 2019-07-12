@@ -60,7 +60,6 @@
     self.backgroundCover.continuousRangeDisplay = mode == RANGE_DISPLAY_MODE_CONTINUOUS ? YES : NO;
 
     self.todayBackgroundColor = appearance.todayBackgroundColor ?: self.backgroundCover.strokeColor;
-    self.orangeColor = appearance.orangeColor ?: UIColorFromRGB(0xF04923);
     self.containerPadding = [GLCalendarView appearance].padding;
 }
 

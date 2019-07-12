@@ -31,6 +31,7 @@
 @property (nonatomic, strong) UIImage *backToTodayButtonImage UI_APPEARANCE_SELECTOR;
 @property (nonatomic, strong) UIColor *backToTodayButtonColor UI_APPEARANCE_SELECTOR;
 @property (nonatomic, strong) UIColor *backToTodayButtonBorderColor UI_APPEARANCE_SELECTOR;
+@property (nonatomic, strong) UIColor *orangeColor UI_APPEARANCE_SELECTOR;
 
 @property (weak, nonatomic) IBOutlet UIView *weekDayTitle;
 

@@ -265,6 +265,7 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 
     GLCalendarDayCell *cell = (GLCalendarDayCell *)[collectionView dequeueReusableCellWithReuseIdentifier:CELL_REUSE_IDENTIFIER forIndexPath:indexPath];
     cell.calendar = self.calendar;
+    cell.orangeColor = self.orangeColor;
     
     CELL_POSITION cellPosition;
     ENLARGE_POINT enlargePoint;

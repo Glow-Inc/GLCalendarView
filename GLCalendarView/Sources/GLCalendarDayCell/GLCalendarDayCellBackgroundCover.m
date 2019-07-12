@@ -124,7 +124,7 @@
         return;
     }
 
-    UIColor *orangeColor = [UIColor colorWithRed:0.9411764706 green:0.2862745098 blue:0.137254902 alpha:1.0];
+    UIColor *orangeColor = [[GLCalendarDayCell appearance] orangeColor]; // [UIColor colorWithRed:0.9411764706 green:0.2862745098 blue:0.137254902 alpha:1.0];
 
     CGFloat paddingLeft = self.paddingLeft;
     CGFloat paddingRight = self.paddingRight;
