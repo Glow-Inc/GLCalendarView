@@ -27,10 +27,11 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 @property (nonatomic) BOOL draggingEndDate;
 
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
-@property (weak, nonatomic) IBOutlet UIView *weekDayTitle;
 @property (weak, nonatomic) IBOutlet GLCalendarMonthCoverView *monthCoverView;
 @property (weak, nonatomic) IBOutlet UIView *magnifierContainer;
 @property (weak, nonatomic) IBOutlet UIImageView *maginifierContentView;
+
+@property (nonatomic, strong) NSMutableArray *dates;
 @end
 
 @implementation GLCalendarView
@@ -78,6 +79,7 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
     self.collectionView.dataSource = self;
     self.collectionView.delegate = self;
     [self.collectionView registerNib:[UINib nibWithNibName:@"GLCalendarDayCell" bundle:[NSBundle bundleForClass:self.class]] forCellWithReuseIdentifier:CELL_REUSE_IDENTIFIER];
+    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"empty"];
     
     self.dragBeginDateGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleDragBeginDate:)];
     self.dragEndDateGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleDragEndDate:)];
@@ -105,7 +107,7 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 
 - (void)setupWeekDayTitle
 {
-    [self.weekDayTitle.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+//    [self.weekDayTitle.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     CGFloat width = (CGRectGetWidth(self.bounds) - self.padding * 2) / 7;
     CGFloat centerY = self.weekDayTitle.bounds.size.height / 2;
     NSArray *titles;
@@ -179,15 +181,43 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 
 - (void)scrollToDate:(NSDate *)date animated:(BOOL)animated;
 {
-    NSInteger item = [GLDateUtils daysBetween:self.firstDate and:date];
-    [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:item inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:animated];
+    for (int i = 0; i < _dates.count; ++i) {
+        NSDate *specificDate = _dates[i];
+        if ([specificDate compare: date] == NSOrderedSame) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
+            [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:animated];
+            break;
+        }
+    }
 }
 
 # pragma mark - getter & setter
 
+- (void)updateDates
+{
+    if (_firstDate != nil && _lastDate != nil) {
+        NSDate *placeholder = [NSDate dateWithTimeIntervalSince1970:0];
+        NSInteger days = [GLDateUtils daysBetween:_firstDate and:_lastDate] + 1;
+        _dates = [[NSMutableArray alloc] init];
+        for (int i = 0; i < days; ++i) {
+            NSDate *date = [GLDateUtils dateByAddingDays:i toDate:_firstDate];
+            NSDateComponents *components = [self.calendar components:NSCalendarUnitDay fromDate:date];
+            if (components.day == 1) {
+                components = [self.calendar components:NSCalendarUnitWeekday fromDate:date];
+                NSInteger spacingDays = 7; // components.weekday == 1 ? 7 : 14;
+                for (int j = 0; j < spacingDays; ++j) {
+                    [_dates addObject:placeholder];
+                }
+            }
+            [_dates addObject:date];
+        }
+    }
+}
+
 - (void)setFirstDate:(NSDate *)firstDate
 {
     _firstDate = [GLDateUtils weekFirstDate:[GLDateUtils cutDate:firstDate]];
+    [self updateDates];
 }
 
 - (NSDate *)firstDate
@@ -201,6 +231,7 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 - (void)setLastDate:(NSDate *)lastDate
 {
     _lastDate = [GLDateUtils weekLastDate:[GLDateUtils cutDate:lastDate]];
+    [self updateDates];
 }
 
 - (NSDate *)lastDate
@@ -220,12 +251,21 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return [GLDateUtils daysBetween:self.firstDate and:self.lastDate] + 1;
+//    return [GLDateUtils daysBetween:self.firstDate and:self.lastDate] + 1;
+    return _dates.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSDate *date = _dates[indexPath.item]; // [self dateForCellAtIndexPath:indexPath];
+
+    if (date == [NSDate dateWithTimeIntervalSince1970:0]) {
+        return [collectionView dequeueReusableCellWithReuseIdentifier:@"empty" forIndexPath:indexPath];
+    }
+
     GLCalendarDayCell *cell = (GLCalendarDayCell *)[collectionView dequeueReusableCellWithReuseIdentifier:CELL_REUSE_IDENTIFIER forIndexPath:indexPath];
+    cell.calendar = self.calendar;
+    cell.orangeColor = self.orangeColor;
     
     CELL_POSITION cellPosition;
     ENLARGE_POINT enlargePoint;
@@ -238,8 +278,7 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
     } else {
         cellPosition = POSITION_NORMAL;
     }
-    
-    NSDate *date = [self dateForCellAtIndexPath:indexPath];
+
     if (self.draggingBeginDate && [GLDateUtils date:self.rangeUnderEdit.beginDate isSameDayAsDate:date]) {
         enlargePoint = ENLARGE_BEGIN_POINT;
     } else if (self.draggingEndDate && [GLDateUtils date:self.rangeUnderEdit.endDate isSameDayAsDate:date]) {
@@ -254,7 +293,8 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 
 - (NSDate *)dateForCellAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [GLDateUtils dateByAddingDays:indexPath.item toDate:self.firstDate];
+    return _dates[indexPath.item];
+//    return [GLDateUtils dateByAddingDays:indexPath.item toDate:self.firstDate];
 }
 
 - (GLCalendarDateRange *)selectedRangeForDate:(NSDate *)date
@@ -269,6 +309,27 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 
 # pragma mark - UICollectionView delegate
 
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSDate *date = [self dateForCellAtIndexPath:indexPath];
+    GLCalendarDateRange *range = [self selectedRangeForDate:date];
+    if (!range || ([range.beginDate compare:date] != NSOrderedSame) || _allowSameBeginEndDates) {
+        BOOL canAdd = [self.delegate calenderView:self canAddRangeWithBeginDate:date];
+        if (canAdd) {
+            GLCalendarDateRange *rangeToAdd = [self.delegate calenderView:self rangeToAddWithBeginDate:date];
+            rangeToAdd.backgroundColor = [UIColor colorWithWhite:0.9215686274509803 alpha:1.0];
+            [self addRange:rangeToAdd];
+
+//            NSIndexPath *nextIndexPath = [NSIndexPath indexPathForItem:indexPath.item+1 inSection:0];
+//            NSIndexPath *nextIndexPath2 = [NSIndexPath indexPathForItem:indexPath.item+2 inSection:0];
+//            NSIndexPath *nextIndexPath3 = [NSIndexPath indexPathForItem:indexPath.item+3 inSection:0];
+            [UIView performWithoutAnimation:^{
+                [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
+            }];
+        }
+    }
+}
+/*
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     NSDate *date = [self dateForCellAtIndexPath:indexPath];
@@ -296,7 +357,7 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
         }
     }
 }
-
+*/
 # pragma mark - UICollectionView layout
 
 - (UIEdgeInsets)collectionView:(UICollectionView*)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
@@ -327,32 +388,32 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
 # pragma mark - UIScrollView delegate
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
-    self.monthCoverView.contentSize = self.collectionView.contentSize;
-    self.monthCoverView.hidden = NO;
-    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-        self.monthCoverView.alpha = 1;
-        self.collectionView.alpha = 0.3;
-    } completion:^(BOOL finished) {
-        
-    }];
+//    self.monthCoverView.contentSize = self.collectionView.contentSize;
+//    self.monthCoverView.hidden = NO;
+//    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+//        self.monthCoverView.alpha = 1;
+//        self.collectionView.alpha = 0.3;
+//    } completion:^(BOOL finished) {
+//        
+//    }];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     // update month cover
-    self.monthCoverView.contentOffset = self.collectionView.contentOffset;
+//    self.monthCoverView.contentOffset = self.collectionView.contentOffset;
 }
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView
                      withVelocity:(CGPoint)velocity
               targetContentOffset:(inout CGPoint *)targetContentOffset
 {
-    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-        self.monthCoverView.alpha = 0;
-        self.collectionView.alpha = 1;
-    } completion:^(BOOL finished) {
-        self.monthCoverView.hidden = YES;
-    }];
+//    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+//        self.monthCoverView.alpha = 0;
+//        self.collectionView.alpha = 1;
+//    } completion:^(BOOL finished) {
+//        self.monthCoverView.hidden = YES;
+//    }];
 }
 
 # pragma mark - Edit range
@@ -381,7 +442,7 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
     if (recognizer == self.dragBeginDateGesture) {
         CGPoint location = [recognizer locationInView:self.collectionView];
         CGRect rectForBeginDate = [self rectForDate:self.rangeUnderEdit.beginDate];
-        rectForBeginDate.origin.x -= self.cellWidth / 2;
+//        rectForBeginDate.origin.x -= self.cellWidth / 2;
         if (CGRectContainsPoint(rectForBeginDate, location)) {
             return YES;
         }
@@ -389,7 +450,7 @@ static NSString * const CELL_REUSE_IDENTIFIER = @"DayCell";
     if (recognizer == self.dragEndDateGesture) {
         CGPoint location = [recognizer locationInView:self.collectionView];
         CGRect rectForEndDate = [self rectForDate:self.rangeUnderEdit.endDate];
-        rectForEndDate.origin.x += self.cellWidth / 2;
+//        rectForEndDate.origin.x += self.cellWidth / 2;
         if (CGRectContainsPoint(rectForEndDate, location)) {
             return YES;
         }
@@ -553,7 +614,15 @@ static NSDate *today;
 
 - (CGRect)rectForDate:(NSDate *)date
 {
-    NSInteger dayDiff = [GLDateUtils daysBetween:self.firstDate and:date];
+//    NSInteger dayDiff = [GLDateUtils daysBetween:self.firstDate and:date];
+    NSInteger dayDiff = 0;
+    for (int i = 0; i < _dates.count; ++i) {
+        NSDate *specificDate = _dates[i];
+        if ([specificDate compare: date] == NSOrderedSame) {
+            break;
+        }
+        dayDiff++;
+    }
     NSInteger row = dayDiff / 7;
     NSInteger col = dayDiff % 7;
     return CGRectMake(self.padding + col * self.cellWidth, row * self.rowHeight, self.cellWidth, self.rowHeight);
@@ -562,25 +631,50 @@ static NSDate *today;
 
 - (void)reloadCellOnDate:(NSDate *)date
 {
-    [self reloadFromBeginDate:date toDate:date];
+    for (int i = 0; i < _dates.count; ++i) {
+        NSDate *specificDate = _dates[i];
+        if ([specificDate compare: date] == NSOrderedSame) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
+            [UIView performWithoutAnimation:^{
+                [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
+            }];
+        }
+    }
+//    [self reloadFromBeginDate:date toDate:date];
 }
 
 - (void)reloadFromBeginDate:(NSDate *)beginDate toDate:(NSDate *)endDate
 {
-    NSMutableArray *indexPaths = [NSMutableArray array];
-    NSInteger beginIndex = MAX(0, [GLDateUtils daysBetween:self.firstDate and:beginDate]);
-    NSInteger endIndex = MIN([self collectionView:self.collectionView numberOfItemsInSection:0] - 1, [GLDateUtils daysBetween:self.firstDate and:endDate]);
-    for (NSInteger i = beginIndex; i <= endIndex; i++) {
-        [indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+    NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+    for (int i = 0; i < _dates.count; ++i) {
+        NSDate *specificDate = _dates[i];
+        if (([beginDate compare: specificDate] != NSOrderedDescending) &&
+            ([endDate compare: specificDate] != NSOrderedAscending)) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
+            [indexPaths addObject:indexPath];
+        }
     }
-    // prevent crash: too many update animations on one view - limit is 31 in flight at a time
-    if (indexPaths.count > 30) {
-        [self.collectionView reloadData];
-    } else {
-        [UIView performWithoutAnimation:^{
-            [self.collectionView reloadItemsAtIndexPaths:indexPaths];
-        }];
-    }
+    [UIView performWithoutAnimation:^{
+        [self.collectionView reloadItemsAtIndexPaths:indexPaths];
+    }];
+    return;
+
+
+
+//    NSMutableArray *indexPaths = [NSMutableArray array];
+//    NSInteger beginIndex = MAX(0, [GLDateUtils daysBetween:self.firstDate and:beginDate]);
+//    NSInteger endIndex = MIN([self collectionView:self.collectionView numberOfItemsInSection:0] - 1, [GLDateUtils daysBetween:self.firstDate and:endDate]);
+//    for (NSInteger i = beginIndex; i <= endIndex; i++) {
+//        [indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+//    }
+//    // prevent crash: too many update animations on one view - limit is 31 in flight at a time
+//    if (indexPaths.count > 30) {
+//        [self.collectionView reloadData];
+//    } else {
+//        [UIView performWithoutAnimation:^{
+//            [self.collectionView reloadItemsAtIndexPaths:indexPaths];
+//        }];
+//    }
 }
 
 - (NSIndexPath *)indexPathForDate:(NSDate *)date
